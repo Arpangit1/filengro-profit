@@ -96,7 +96,7 @@ window.PDFExporter = (function () {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(8);
         doc.setTextColor(...C.orange);
-        doc.text('www.ecomprofit.filengro.in', MR, 14, { align: 'right' });
+        doc.text('www.profit.filengro.in', MR, 14, { align: 'right' });
 
         // Generated date
         const today = new Date().toLocaleDateString('en-IN', {
@@ -342,7 +342,7 @@ window.PDFExporter = (function () {
         doc.text('Filengro', PW / 2 - 1, footerY + 13, { align: 'right' });
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(...C.slateLight);
-        doc.text('  •  www.ecomprofit.filengro.in  •  Profit Calculator', PW / 2 - 1, footerY + 13);
+        doc.text('  •  www.profit.filengro.in  •  Profit Calculator', PW / 2 - 1, footerY + 13);
 
         // ── Save ─────────────────────────────────────────────────────────────
         const cleanName = (inputs.productName || 'Product')
