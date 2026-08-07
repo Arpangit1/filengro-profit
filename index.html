@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filengro | E-commerce Profit Calculator (Amazon, Flipkart, Meesho, Shopify & More)</title>
+    
+    <!-- SEO & Metadata -->
+    <meta name="description" content="Calculate your exact e-commerce net profit, marketplace commission, shipping charges, GST, and return costs for Amazon, Flipkart, Meesho, Shopify, Myntra, JioMart. Free offline seller profit tool.">
+    <meta name="keywords" content="e-commerce profit calculator, amazon seller calculator, flipkart profit calculator, meesho margin calculator, GST profit calculator, Indian seller profit calculator">
+    <meta name="author" content="Filengro">
+    <meta name="theme-color" content="#0F172A">
+    
+    <!-- OpenGraph / Social Media -->
+    <meta property="og:title" content="Filengro | E-commerce Profit Calculator">
+    <meta property="og:description" content="Calculate net profit, margins, GST, marketplace fees, shipping & return costs for online marketplaces in India.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://filengro.com/assets/banner.png">
+    
+    <!-- Favicon & PWA Manifest -->
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- App Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- External Libraries (Chart.js & jsPDF) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <!-- Top Progress & Notification Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <!-- Sticky Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand-group">
+                <a href="./" class="brand-logo-link" title="Filengro">
+                    <img src="assets/logo.png" alt="Filengro Logo" class="brand-logo-img">
+                </a>
+                <div class="brand-info">
+                    <div class="brand-name-wrap">
+                        <span class="brand-name">Filengro</span>
+                    </div>
+                    <h1 class="header-title">E-commerce Profit Calculator</h1>
+                </div>
+            </div>
+            
+            <p class="header-subtitle">
+                Calculate your exact profit after marketplace fees, GST, shipping, advertising &amp; return charges.
+            </p>
+
+            <div class="header-actions">
+                <button id="btn-manage-presets" class="btn btn-ghost" title="Manage Presets">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span>Edit Presets</span>
+                </button>
+
+                <button id="btn-history" class="btn btn-ghost" title="Saved History">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    <span>History</span>
+                    <span id="history-badge" class="badge">0</span>
+                </button>
+
+                <button id="theme-toggle" class="btn-theme-toggle" aria-label="Toggle Dark Mode" title="Toggle Light/Dark Theme">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container Layout -->
+    <main class="main-layout">
+        <!-- LEFT COLUMN: INPUT STEPS FORM -->
+        <section class="calculator-inputs-column">
+
+            <!-- STEP 1: PRODUCT DETAILS -->
+            <div class="glass-card step-card" id="step-1">
+                <div class="step-header">
+                    <div class="step-badge">1</div>
+                    <div class="step-title-group">
+                        <h2>Product Details</h2>
+                        <p>Enter basic pricing, cost, weight, and GST parameters</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="product-name">Product Name <span class="optional">(Optional)</span></label>
+                        <div class="input-icon-wrapper">
+                            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                            <input type="text" id="product-name" placeholder="e.g. Wireless Bluetooth Earbuds" value="">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-sku">SKU <span class="optional">(Optional)</span></label>
+                        <input type="text" id="product-sku" placeholder="e.g. WBE-BLK-001" value="">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-category">Product Category <span class="required">*</span></label>
+                        <select id="product-category">
+                            <option value="Electronics">Electronics</option>
+                            <option value="Mobile Accessories" selected>Mobile Accessories</option>
+                            <option value="Fashion">Fashion</option>
+                            <option value="Shoes">Shoes</option>
+                            <option value="Beauty & Personal Care">Beauty &amp; Personal Care</option>
+                            <option value="Home & Kitchen">Home &amp; Kitchen</option>
+                            <option value="Grocery">Grocery</option>
+                            <option value="Books">Books</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Jewellery">Jewellery</option>
+                            <option value="Automotive">Automotive</option>
+                            <option value="Pet Supplies">Pet Supplies</option>
+                            <option value="Office Supplies">Office Supplies</option>
+                            <option value="Handmade">Handmade</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="selling-price">Selling Price (₹) <span class="required">*</span></label>
+                        <div class="input-prefix-wrapper">
+                            <span class="prefix">₹</span>
+                            <input type="number" id="selling-price" min="0" step="1" placeholder="e.g. 1299" value="">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-cost">Product Cost / Sourcing (₹) <span class="required">*</span></label>
+                        <div class="input-prefix-wrapper">
+                            <span class="prefix">₹</span>
+                            <input type="number" id="product-cost" min="0" step="1" placeholder="e.g. 450" value="">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gst-rate">GST Rate</label>
+                        <select id="gst-rate">
+                            <option value="0">0%</option>
+                            <option value="5">5%</option>
+                            <option value="12">12%</option>
+                            <option value="18" selected>18%</option>
+                            <option value="28">28%</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="weight-slab">Weight Slab</label>
+                        <select id="weight-slab">
+                            <option value="0-500g" selected>0 – 500g</option>
+                            <option value="501g-1kg">501g – 1kg</option>
+                            <option value="1-2kg">1 – 2kg</option>
+                            <option value="2-5kg">2 – 5kg</option>
+                            <option value="5kg+">5kg+</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: SELECT MARKETPLACE -->
+            <div class="glass-card step-card" id="step-2">
+                <div class="step-header">
+                    <div class="step-badge">2</div>
+                    <div class="step-title-group">
+                        <h2>Select Marketplace</h2>
+                        <p>Auto-loads official commission, closing fee, and shipping slabs</p>
+                    </div>
+                </div>
+
+                <div class="marketplace-selector-grid">
+                    <label class="marketplace-radio-card active">
+                        <input type="radio" name="marketplace" value="Amazon India" checked>
+                        <div class="mp-content">
+                            <div class="mp-icon amazon-color">A</div>
+                            <span class="mp-name">Amazon India</span>
+                        </div>
+                    </label>
+
+                    <label class="marketplace-radio-card">
+                        <input type="radio" name="marketplace" value="Flipkart">
+                        <div class="mp-content">
+                            <div class="mp-icon flipkart-color">F</div>
+                            <span class="mp-name">Flipkart</span>
+                        </div>
+                    </label>
+
+                    <label class="marketplace-radio-card">
+                        <input type="radio" name="marketplace" value="Meesho">
+                        <div class="mp-content">
+                            <div class="mp-icon meesho-color">M</div>
+                            <span class="mp-name">Meesho</span>
+                        </div>
+                    </label>
+
+                    <label class="marketplace-radio-card">
+                        <input type="radio" name="marketplace" value="Shopify">
+                        <div class="mp-content">
+                            <div class="mp-icon shopify-color">S</div>
+                            <span class="mp-name">Shopify</span>
+                        </div>
+                    </label>
+
+                    <label class="marketplace-radio-card">
+                        <input type="radio" name="marketplace" value="Myntra">
+                        <div class="mp-content">
+                            <div class="mp-icon myntra-color">My</div>
+                            <span class="mp-name">Myntra</span>
+                        </div>
+                    </label>
+
+                    <label class="marketplace-radio-card">
+                        <input type="radio" name="marketplace" value="JioMart">
+                        <div class="mp-content">
+                            <div class="mp-icon jiomart-color">J</div>
+                            <span class="mp-name">JioMart</span>
+                        </div>
+                    </label>
+
+                    <label class="marketplace-radio-card">
+                        <input type="radio" name="marketplace" value="Other">
+                        <div class="mp-content">
+                            <div class="mp-icon other-color">+</div>
+                            <span class="mp-name">Other / Custom</span>
+                        </div>
+                    </label>
+                </div>
+                
+                <div class="preset-loaded-indicator" id="preset-status-banner">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Loaded presets for <strong>Amazon India</strong> (<span id="active-category-label">Mobile Accessories</span>)</span>
+                </div>
+            </div>
+
+            <!-- STEP 3: MARKETPLACE CHARGES -->
+            <div class="glass-card step-card" id="step-3">
+                <div class="step-header">
+                    <div class="step-badge">3</div>
+                    <div class="step-title-group">
+                        <h2>Marketplace Charges</h2>
+                        <p>All fields are pre-filled and fully editable</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="commission-rate">Commission (%)</label>
+                        <div class="input-suffix-wrapper">
+                            <input type="number" id="commission-rate" min="0" max="100" step="0.1" value="12">
+                            <span class="suffix">%</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="closing-fee">Closing Fee (₹)</label>
+                        <div class="input-prefix-wrapper">
+                            <span class="prefix">₹</span>
+                            <input type="number" id="closing-fee" min="0" step="1" value="12">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shipping-fee">Shipping Fee (₹)</label>
+                        <div class="input-prefix-wrapper">
+                            <span class="prefix">₹</span>
+                            <input type="number" id="shipping-fee" min="0" step="1" value="55">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="packaging-cost">Packaging Cost (₹)</label>
+                        <div class="input-prefix-wrapper">
+                            <span class="prefix">₹</span>
+                            <input type="number" id="packaging-cost" min="0" step="1" value="10">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="advertising-cost">Advertising Cost (₹/unit)</label>
+                        <div class="input-prefix-wrapper">
+                            <span class="prefix">₹</span>
+                            <input type="number" id="advertising-cost" min="0" step="1" value="50">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="payment-gateway">Payment Gateway (%)</label>
+                        <div class="input-suffix-wrapper">
+                            <input type="number" id="payment-gateway" min="0" max="100" step="0.1" value="2">
+                            <span class="suffix">%</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="misc-charges">Misc / Overhead Charges (₹)</label>
+                        <div class="input-prefix-wrapper">
+                            <span class="prefix">₹</span>
+                            <input type="number" id="misc-charges" min="0" step="1" value="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: RETURN DETAILS -->
+            <div class="glass-card step-card" id="step-4">
+                <div class="step-header">
+                    <div class="step-badge">4</div>
+                    <div class="step-title-group">
+                        <h2>Return &amp; RTO Charges</h2>
+                        <p>Factoring return rate risk into per-unit profitability</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="return-rate">Expected Return Rate (%)</label>
+                        <div class="input-suffix-wrapper">
+                            <input type="number" id="return-rate" min="0" max="100" step="0.5" value="8">
+                            <span class="suffix">%</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="return-shipping">Return Shipping Cost (₹)</label>
+                        <div class="input-prefix-wrapper">
+                            <span class="prefix">₹</span>
+                            <input type="number" id="return-shipping" min="0" step="1" value="55">
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="return-processing">Return Processing &amp; Loss Fee (₹)</label>
+                        <div class="input-prefix-wrapper">
+                            <span class="prefix">₹</span>
+                            <input type="number" id="return-processing" min="0" step="1" value="50">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="action-buttons-group">
+                <button id="btn-calculate" class="btn btn-primary btn-lg glow-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><line x1="8" y1="10" x2="16" y2="10"></line><line x1="8" y1="14" x2="16" y2="14"></line></svg>
+                    <span>Calculate Profit</span>
+                </button>
+
+                <button id="btn-reset" class="btn btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    <span>Reset</span>
+                </button>
+
+                <button id="btn-save" class="btn btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    <span>Save</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- RIGHT COLUMN: RESULTS DASHBOARD & CHARTS -->
+        <section class="calculator-results-column">
+
+            <!-- EMPTY STATE WELCOME CARD (shown when no price entered) -->
+            <div id="empty-state-card" class="glass-card empty-state-card">
+                <div class="empty-state-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><line x1="8" y1="10" x2="16" y2="10"></line><line x1="8" y1="14" x2="16" y2="14"></line></svg>
+                </div>
+                <h3 class="empty-state-title">Enter Your Product Details</h3>
+                <p class="empty-state-desc">Type your <strong>Selling Price</strong> and <strong>Product Cost</strong> to instantly calculate net profit, margins, fees and break-even price.</p>
+                <div class="empty-state-steps">
+                    <div class="es-step"><span class="es-num">1</span><span>Set Selling Price &amp; Product Cost</span></div>
+                    <div class="es-step"><span class="es-num">2</span><span>Pick your Marketplace</span></div>
+                    <div class="es-step"><span class="es-num">3</span><span>Hit Calculate Profit</span></div>
+                </div>
+            </div>
+
+            <!-- PROFIT STATUS BANNER CARD -->
+            <div id="profit-status-card" class="glass-card status-card status-profitable" style="display:none;">
+                <div class="status-content">
+                    <div class="status-pill" id="status-pill">
+                        <svg class="status-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span id="status-text">Profitable Product</span>
+                    </div>
+                    <div class="net-profit-display">
+                        <span class="net-profit-label">Net Profit Per Unit</span>
+                        <div class="net-profit-value" id="res-net-profit">₹0.00</div>
+                    </div>
+                </div>
+
+                <div class="status-metrics-row">
+                    <div class="mini-metric">
+                        <span class="mini-metric-label">Profit Margin</span>
+                        <span class="mini-metric-value" id="res-margin">0.0%</span>
+                    </div>
+                    <div class="mini-metric-divider"></div>
+                    <div class="mini-metric">
+                        <span class="mini-metric-label">ROI</span>
+                        <span class="mini-metric-value" id="res-roi">0.0%</span>
+                    </div>
+                    <div class="mini-metric-divider"></div>
+                    <div class="mini-metric">
+                        <span class="mini-metric-label">Break-even Price</span>
+                        <span class="mini-metric-value" id="res-breakeven">₹0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXECUTIVE KPI GRID CARDS -->
+            <div class="kpi-grid">
+                <div class="kpi-card glass-card">
+                    <div class="kpi-icon-wrap bg-blue-subtle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <div class="kpi-body">
+                        <span class="kpi-title">Gross Revenue</span>
+                        <span class="kpi-value" id="res-revenue">—</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card glass-card">
+                    <div class="kpi-icon-wrap bg-purple-subtle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                    </div>
+                    <div class="kpi-body">
+                        <span class="kpi-title">GST Amount</span>
+                        <span class="kpi-value" id="res-gst">—</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card glass-card">
+                    <div class="kpi-icon-wrap bg-orange-subtle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    </div>
+                    <div class="kpi-body">
+                        <span class="kpi-title">Marketplace Charges</span>
+                        <span class="kpi-value" id="res-total-charges">—</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card glass-card">
+                    <div class="kpi-icon-wrap bg-red-subtle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
+                    </div>
+                    <div class="kpi-body">
+                        <span class="kpi-title">Return Cost Risk</span>
+                        <span class="kpi-value" id="res-return-cost">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DETAILED BREAKDOWN ACCORDION / TABLE -->
+            <div class="glass-card breakdown-card">
+                <div class="card-header-bar">
+                    <h3>Fee Breakdown Details</h3>
+                    <span class="tag-pill">Per Unit Sold</span>
+                </div>
+                <div class="breakdown-table">
+                    <div class="breakdown-row">
+                        <span class="row-label">Product Sourcing Cost</span>
+                        <span class="row-value" id="tbl-cost">—</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="row-label">Marketplace Commission (<span id="tbl-comm-rate">12%</span>)</span>
+                        <span class="row-value" id="tbl-commission">—</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="row-label">Closing Fee</span>
+                        <span class="row-value" id="tbl-closing">—</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="row-label">Shipping Cost (<span id="tbl-weight">0-500g</span>)</span>
+                        <span class="row-value" id="tbl-shipping">—</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="row-label">Packaging Cost</span>
+                        <span class="row-value" id="tbl-packaging">—</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="row-label">Advertising / CAC Cost</span>
+                        <span class="row-value" id="tbl-advertising">—</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="row-label">Payment Gateway Fee (<span id="tbl-pg-rate">2%</span>)</span>
+                        <span class="row-value" id="tbl-pg">—</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="row-label">Misc Overhead Charges</span>
+                        <span class="row-value" id="tbl-misc">—</span>
+                    </div>
+                    <div class="breakdown-row highlight">
+                        <span class="row-label"><strong>Total Direct &amp; Overhead Fees</strong></span>
+                        <span class="row-value" id="tbl-total-fees"><strong>—</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TARGET SELLING PRICES CARD -->
+            <div class="glass-card target-pricing-card">
+                <div class="card-header-bar">
+                    <h3>Suggested Target Selling Prices</h3>
+                    <p>Prices required to hit desired net profit margins</p>
+                </div>
+                <div class="target-grid">
+                    <div class="target-card border-target-20">
+                        <span class="target-badge">20% Margin</span>
+                        <span class="target-price" id="target-20-price">—</span>
+                        <span class="target-profit" id="target-20-profit">Profit: —</span>
+                    </div>
+                    <div class="target-card border-target-30">
+                        <span class="target-badge">30% Margin</span>
+                        <span class="target-price" id="target-30-price">—</span>
+                        <span class="target-profit" id="target-30-profit">Profit: —</span>
+                    </div>
+                    <div class="target-card border-target-40">
+                        <span class="target-badge">40% Margin</span>
+                        <span class="target-price" id="target-40-price">—</span>
+                        <span class="target-profit" id="target-40-profit">Profit: —</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHARTS SECTION -->
+            <div class="charts-wrapper">
+                <!-- CHART 1: PIE / DOUGHNUT COST BREAKDOWN -->
+                <div class="glass-card chart-card">
+                    <div class="chart-header">
+                        <h3>Revenue &amp; Cost Distribution</h3>
+                        <span class="chart-subtitle">Share of selling price</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="costDistributionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- CHART 2: BAR CHART FEE COMPARISON -->
+                <div class="glass-card chart-card">
+                    <div class="chart-header">
+                        <h3>Fee Component Analysis</h3>
+                        <span class="chart-subtitle">Individual charge breakdown</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="feeBreakdownChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTION EXPORT BUTTONS BAR -->
+            <div class="glass-card export-actions-card">
+                <div class="export-buttons-flex">
+                    <button id="btn-copy" class="btn btn-outline">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <span>Copy Results</span>
+                    </button>
+                    
+                    <button id="btn-pdf" class="btn btn-outline">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        <span>Download PDF</span>
+                    </button>
+
+                    <button id="btn-print" class="btn btn-outline">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                        <span>Print</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- DISCLAIMER CARD -->
+            <div class="glass-card disclaimer-card">
+                <div class="disclaimer-header">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <span>Disclaimer</span>
+                </div>
+                <p class="disclaimer-text">
+                    This calculator is provided for estimation and informational purposes only. Actual marketplace commission rates, shipping costs, closing fees, GST liability, and return processing charges may vary based on seller tier, fulfillment type (FBA / FBF / Self-ship), regional pincodes, and marketplace policy revisions. Please verify final settlement figures with your official marketplace seller portal reports.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- MOBILE STICKY FLOATING QUICK CALCULATE BAR -->
+    <div class="mobile-sticky-bar" id="mobile-bar">
+        <div class="mobile-summary">
+            <span class="mobile-summary-label">Net Profit</span>
+            <span class="mobile-summary-value" id="mobile-profit-val">₹0.00</span>
+        </div>
+        <div class="mobile-btn-group">
+            <button id="btn-mobile-calc" class="btn btn-primary btn-sm glow-button">Calculate</button>
+            <button id="btn-mobile-save" class="btn btn-secondary btn-sm">Save</button>
+        </div>
+    </div>
+
+    <!-- SAVED HISTORY DRAWER MODAL -->
+    <div id="modal-history" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Saved Calculations History</h3>
+                <button class="modal-close" id="close-history">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="history-actions-bar">
+                    <input type="text" id="history-search" placeholder="Search calculations..." class="input-sm">
+                    <button id="btn-clear-history" class="btn btn-danger btn-sm">Clear All</button>
+                    <button id="btn-export-csv" class="btn btn-outline btn-sm">Export CSV</button>
+                </div>
+                <div id="history-list-container" class="history-list">
+                    <!-- Dynamic History Cards Inserted Here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT PRESETS MODAL -->
+    <div id="modal-presets" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Marketplace Presets Settings</h3>
+                <button class="modal-close" id="close-presets">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-subtitle">Customize default commission, closing fees, packaging, and return charges for each marketplace.</p>
+                <div class="preset-editor-controls">
+                    <label for="preset-editor-select">Select Marketplace to Edit:</label>
+                    <select id="preset-editor-select">
+                        <option value="Amazon India">Amazon India</option>
+                        <option value="Flipkart">Flipkart</option>
+                        <option value="Meesho">Meesho</option>
+                        <option value="Shopify">Shopify</option>
+                        <option value="Myntra">Myntra</option>
+                        <option value="JioMart">JioMart</option>
+                    </select>
+                </div>
+
+                <div id="preset-editor-fields" class="form-grid">
+                    <!-- Dynamically Rendered Preset Form Fields -->
+                </div>
+                
+                <div class="modal-footer">
+                    <button id="btn-reset-presets" class="btn btn-outline">Restore Defaults</button>
+                    <button id="btn-save-presets" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 <strong>Filengro</strong>. Modern E-commerce Profit Calculator. 100% Offline Capable &amp; Client-Side.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <script src="js/presets.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/pdf-export.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

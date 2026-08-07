@@ -1,0 +1,16 @@
+{
+  "name": "Filengro E-commerce Profit Calculator",
+  "short_name": "Filengro Profit",
+  "description": "Calculate exact profit after marketplace fees, GST, shipping and return charges for Amazon, Flipkart, Meesho, Shopify & more.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#0F172A",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png"
+    }
+  ]
+}
